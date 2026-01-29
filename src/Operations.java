@@ -3,6 +3,8 @@ public enum Operations {
 
     TRANSACTION,
     DEPOSIT,
-    WITHRAW
+    WITHRAW,
+    CHECK_BALANCE,
+    TRANSFER
 
 }
