@@ -4,5 +4,6 @@ public class Main {
         System.out.println("first");
         System.out.println("second");
         System.out.println("finish");
+        System.out.println("");
     }
 }
