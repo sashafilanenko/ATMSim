@@ -16,6 +16,10 @@ public class User {
         return name;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public Double getBalanceByID(String accountID){
         for(Account account : accounts){
             if(account.getAccountID().equals(accountID)){
