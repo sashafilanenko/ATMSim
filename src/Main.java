@@ -19,7 +19,7 @@ public class Main {
         System.out.println("Пользователь: \n" + user.getName() + ", аккаунт: " + acc1.getAccountID() + ", баланс: " + user.getBalanceByID("1") + "\n");
         System.out.println("Пользователь: \n" + user.getName() + ", аккаунт: " + acc2.getAccountID() + ", баланс: " + user.getBalanceByID("2") + "\n");
 
-        System.out.println("Пользователь: \n" + user2.getName() + ", аккаунт: " + acc3.getAccountID() + ", баланс: " + user2.getBalanceByID("2") + "\n");
+        System.out.println("Пользователь: \n" + user2.getName() + ", аккаунт: " + acc3.getAccountID() + ", баланс: " + user2.getBalanceByID("3") + "\n");
 
         ATM atm = new ATM(bank);
         atm.start();

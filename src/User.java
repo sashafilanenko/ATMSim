@@ -20,10 +20,23 @@ public class User {
         return password;
     }
 
+    public int getNumOfAccounts(){
+        return accounts.size();
+    }
+
     public Double getBalanceByID(String accountID){
         for(Account account : accounts){
             if(account.getAccountID().equals(accountID)){
                 return  account.getBalance();
+            }
+        }
+        return null;
+    }
+
+    public Account getAccountById(String accountId) {
+        for (Account account : accounts) {
+            if (account.getAccountID().equals(accountId)) {
+                return account;
             }
         }
         return null;

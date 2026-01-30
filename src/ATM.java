@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ATM {
@@ -5,6 +7,8 @@ public class ATM {
     private final Bank bank;
     public String login;
     public String password;
+
+    public List<Double> temp = new ArrayList<>();
 
     ATM(Bank bank){
         this.bank = bank;
@@ -28,6 +32,28 @@ public class ATM {
             System.out.println("Неверный логин или пароль");
         }
 
+        System.out.println("выберите действия: \n" +
+                "1) оплатить обслуживание карты\n" +
+                "2) пополнить карту\n" +
+                "3) снять деньги со счета\n" +
+                "4) проверить баланс\n" +
+                "5) перевести деньги другому пользователю");
+
+        User targetUser = bank.getTargetUser("Sam");
+
+        int action = scan.nextInt();
+        switch (action){
+            case 1 -> bank.transaction(currentUser, String.valueOf(1));
+            case 2 -> bank.deposit(currentUser, String.valueOf(1), 500);
+            case 3 -> bank.withraw(currentUser, String.valueOf(1), 10);
+            case 4 -> temp = bank.checkBalance(currentUser);
+            case 5 -> bank.transfer(currentUser, String.valueOf(1), targetUser, String.valueOf(1), 1.0);
+        }
+
+
+        temp = bank.checkBalance(currentUser);
+
+        System.out.println(temp);;
 
     }
 

@@ -8,15 +8,19 @@ public class Account {
         this.balance = b;
     }
 
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
-
     public Double getBalance() {
         return balance;
     }
 
     public String getAccountID() {
         return accountID;
+    }
+
+    public void deposit(double amount){
+        balance +=amount;
+    }
+
+    public void withraw(double amount){
+        balance -= amount;
     }
 }

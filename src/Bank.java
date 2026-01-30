@@ -23,4 +23,42 @@ public class Bank {
         return null;
     }
 
+    public User getTargetUser(String login){
+        for(User user:users){
+            if(login.equals(user.getName()) && user.getNumOfAccounts() != 0){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public void transaction(User user, String id){
+        Account account = user.getAccountById(id);
+        account.withraw(20);
+    }
+    public void deposit(User user, String id, double amount){
+        Account account = user.getAccountById(id);
+        account.deposit(amount);
+    }
+
+    public void withraw(User user, String id, double amount){
+        Account account = user.getAccountById(id);
+        account.withraw(amount);
+    }
+    public List<Double> checkBalance(User user){
+        List<Double> balances = new ArrayList<>();
+        for(int i = 1; i <= user.getNumOfAccounts(); i++){
+            balances.add(user.getBalanceByID(String.valueOf(i)));
+        }
+        return balances;
+    }
+
+    public void transfer(User currentUser, String currentID, User targetUser, String targetID, Double cost){
+        Account account1 = currentUser.getAccountById(currentID);
+        Account account2 = targetUser.getAccountById(targetID);
+
+        account1.withraw(cost);
+        account2.deposit(cost);
+    }
+
 }
