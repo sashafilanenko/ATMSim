@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.List;
 
 public class User {
@@ -24,7 +25,7 @@ public class User {
         return accounts.size();
     }
 
-    public Double getBalanceByID(String accountID){
+    public BigDecimal getBalanceByID(String accountID){
         for(Account account : accounts){
             if(account.getAccountID().equals(accountID)){
                 return  account.getBalance();

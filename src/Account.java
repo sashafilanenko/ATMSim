@@ -1,14 +1,15 @@
+import java.math.BigDecimal;
 public class Account {
 
     private String accountID;
-    private Double balance;
+    private BigDecimal balance;
 
-    Account(String ID, double b){
+    Account(String ID, BigDecimal b){
         this.accountID = ID;
         this.balance = b;
     }
 
-    public Double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
@@ -16,11 +17,11 @@ public class Account {
         return accountID;
     }
 
-    public void deposit(double amount){
-        balance +=amount;
+    public void deposit(BigDecimal amount){
+        balance = balance.add(amount);
     }
 
-    public void withraw(double amount){
-        balance -= amount;
+    public void withraw(BigDecimal amount){
+        balance = balance.subtract(amount);
     }
 }

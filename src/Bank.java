@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,26 +35,26 @@ public class Bank {
 
     public void transaction(User user, String id){
         Account account = user.getAccountById(id);
-        account.withraw(20);
+        account.withraw(BigDecimal.valueOf(20));
     }
-    public void deposit(User user, String id, double amount){
+    public void deposit(User user, String id, BigDecimal amount){
         Account account = user.getAccountById(id);
         account.deposit(amount);
     }
 
-    public void withraw(User user, String id, double amount){
+    public void withraw(User user, String id, BigDecimal amount){
         Account account = user.getAccountById(id);
         account.withraw(amount);
     }
-    public List<Double> checkBalance(User user){
-        List<Double> balances = new ArrayList<>();
+    public List<BigDecimal> checkBalance(User user){
+        List<BigDecimal> balances = new ArrayList<>();
         for(int i = 1; i <= user.getNumOfAccounts(); i++){
             balances.add(user.getBalanceByID(String.valueOf(i)));
         }
         return balances;
     }
 
-    public void transfer(User currentUser, String currentID, User targetUser, String targetID, Double cost){
+    public void transfer(User currentUser, String currentID, User targetUser, String targetID, BigDecimal cost){
         Account account1 = currentUser.getAccountById(currentID);
         Account account2 = targetUser.getAccountById(targetID);
 

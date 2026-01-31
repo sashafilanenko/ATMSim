@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Main {
@@ -5,10 +6,10 @@ public class Main {
 
         Bank bank = new Bank();
 
-        Account acc1 = new Account("1", 0);
-        Account acc2 = new Account("2", 100);
+        Account acc1 = new Account("1", BigDecimal.valueOf(0));
+        Account acc2 = new Account("2", BigDecimal.valueOf(100));
 
-        Account acc3 = new Account("3", 10000);
+        Account acc3 = new Account("3", BigDecimal.valueOf(1000));
 
         User user = new User("Alex", "dddfff", List.of(acc1, acc2));
         User user2 = new User("Sam", "12345", List.of(acc3));
