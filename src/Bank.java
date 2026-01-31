@@ -1,50 +1,53 @@
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Bank {
-    private List<User> users = new ArrayList<>();
+    private Map<String, User> users = new HashMap<>();
 
     public void addUser(User user){
         if(user != null){
-            users.add(user);
+            users.put(user.getName(), user);
         }
     }
 
     public List<User> getUsers(){
-        return List.copyOf(users);
+        return List.copyOf(users.values());
     }
 
     public User authenticate(String login, String password){
-        for(User user:users){
-            if(login.equals(user.getName()) && password.equals(user.getPassword())){
-                return user;
-            }
+
+        User user = users.get(login);
+
+        if(user != null && user.getPassword().equals(password)){
+            return user;
         }
         return null;
     }
 
     public User getTargetUser(String login){
-        for(User user:users){
-            if(login.equals(user.getName()) && user.getNumOfAccounts() != 0){
-                return user;
-            }
+
+        User user = users.get(login);
+        if(user != null && user.getNumOfAccounts() !=0){
+            return user;
         }
         return null;
     }
 
     public void transaction(User user, String id){
         Account account = user.getAccountById(id);
-        account.withraw(BigDecimal.valueOf(20));
+        account.withdraw(BigDecimal.valueOf(20));
     }
     public void deposit(User user, String id, BigDecimal amount){
         Account account = user.getAccountById(id);
         account.deposit(amount);
     }
 
-    public void withraw(User user, String id, BigDecimal amount){
+    public void withdraw(User user, String id, BigDecimal amount){
         Account account = user.getAccountById(id);
-        account.withraw(amount);
+        account.withdraw(amount);
     }
     public List<BigDecimal> checkBalance(User user){
         List<BigDecimal> balances = new ArrayList<>();
@@ -58,7 +61,7 @@ public class Bank {
         Account account1 = currentUser.getAccountById(currentID);
         Account account2 = targetUser.getAccountById(targetID);
 
-        account1.withraw(cost);
+        account1.withdraw(cost);
         account2.deposit(cost);
     }
 

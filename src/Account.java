@@ -18,10 +18,13 @@ public class Account {
     }
 
     public void deposit(BigDecimal amount){
+        if(amount.compareTo(BigDecimal.ZERO) <= 0){
+            throw new IllegalArgumentException("Сумма должна быть положительной");
+        }
         balance = balance.add(amount);
     }
 
-    public void withraw(BigDecimal amount){
+    public void withdraw(BigDecimal amount){
         balance = balance.subtract(amount);
     }
 }
