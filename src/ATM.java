@@ -9,29 +9,49 @@ import java.util.Scanner;
 public class ATM {
 
     private final Bank bank;
+    private final Scanner scan = new Scanner(System.in);;
+
+    private User currentUser;
 
     ATM(Bank bank){
         this.bank = bank;
     }
 
-    public void start(){
-        Scanner scan = new Scanner(System.in);
-        try {
-            System.out.println("Добро пожаловать, войдите в аккаунт...\nВведите логин:");
-            String login = scan.nextLine();
+    public void setCurrentUser(User current){
+        this.currentUser = current;
+    }
 
-            System.out.println("Введите пароль:");
-            String password = scan.nextLine();
+    public void start() {
+        System.out.println("Добро пожаловать, войдите в аккаунт");
+        while (currentUser == null) {
+            try {
+                System.out.print("Введите логин: ");
+                String login = scan.nextLine();
 
-            User currentUser = bank.authenticate(login, password);
-            System.out.println("Успешный вход, привет " + currentUser.getName());
+                System.out.println("Введите пароль:");
+                String password = scan.nextLine();
+                setCurrentUser(bank.authenticate(login, password));
+                System.out.println("Успешный вход, привет " + currentUser.getName());
 
+            } catch (AuthException ae) {
+                System.out.println("Авторизация не удалась: " + ae.getMessage());
+            }
+
+        }
+        menu();
+    }
+
+    public void menu() {
+        boolean running = true;
+
+        while (running) {
             System.out.println("Выберите действие: \n" +
                     "1) оплатить обслуживание карты\n" +
                     "2) пополнить карту\n" +
                     "3) снять деньги со счета\n" +
                     "4) проверить баланс\n" +
-                    "5) перевести деньги другому пользователю");
+                    "5) перевести деньги другому пользователю\n" +
+                    "6) выйти");
 
             int action;
             try {
@@ -102,18 +122,9 @@ public class ATM {
                         System.out.println("Ошибка: " + e.getMessage());
                     }
                 }
+                case 6 -> running = false;
                 default -> System.out.println("Неверный выбор");
             }
-
-        } catch (AuthException ae) {
-            System.out.println("Авторизация не удалась: " + ae.getMessage());
-        } catch (Exception e) {
-            System.out.println("Произошла непредвиденная ошибка: " + e.getMessage());
-        } finally {
-            System.out.println("Сеанс завершён.");
         }
     }
-
-
-
 }
