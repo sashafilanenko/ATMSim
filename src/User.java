@@ -1,3 +1,5 @@
+import exceptions.AccountNotFoundException;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -25,22 +27,18 @@ public class User {
         return accounts.size();
     }
 
-    public BigDecimal getBalanceByID(String accountID){
-        for(Account account : accounts){
-            if(account.getAccountID().equals(accountID)){
-                return  account.getBalance();
-            }
-        }
-        return null;
+    public BigDecimal getBalanceByID(String accountID) throws AccountNotFoundException{
+        Account account = getAccountById(accountID);
+        return account.getBalance();
     }
 
-    public Account getAccountById(String accountId) {
+    public Account getAccountById(String accountId) throws AccountNotFoundException{
         for (Account account : accounts) {
             if (account.getAccountID().equals(accountId)) {
                 return account;
             }
         }
-        return null;
+        throw new AccountNotFoundException("счет не найден " + accountId + "у пользователя " + name);
     }
 
 
