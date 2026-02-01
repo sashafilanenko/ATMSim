@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ATM {
-
+    //TODO: пора бы и махнуть на Swing
+    //TODO: хешировать пароли, шифровать + соль, возможно мигрировать на проект с maven
     private final Bank bank;
     private final Scanner scan = new Scanner(System.in);;
 
@@ -41,6 +42,9 @@ public class ATM {
         menu();
     }
 
+
+    //TODO: переделать этот огромный и страшный метод, кейсы
+    //TODO: надо потестировать трим в BigDecimal, обработать ситуацию с воодом запятой
     public void menu() {
         boolean running = true;
 

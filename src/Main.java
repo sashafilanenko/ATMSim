@@ -8,6 +8,9 @@ public class Main {
 
         Bank bank = new Bank();
 
+        //TODO: вносить ID в список и при создании нового аккаунта присваивать уникальный
+        //TODO: поправить счетчик, проходить по листу, а не считать циклом (долго)
+
         Account acc1 = new Account("1", BigDecimal.valueOf(0));
         Account acc2 = new Account("2", BigDecimal.valueOf(100));
 

@@ -11,6 +11,8 @@ import java.util.Map;
 public class Bank {
     private Map<String, User> users = new HashMap<>();
 
+    private static final BigDecimal MAINTENANCE_FEE = BigDecimal.valueOf(20);
+
     public void addUser(User user) throws AccountNotFoundException{
         if(user == null){
             throw new AccountNotFoundException("объект user нулевой");
@@ -46,7 +48,7 @@ public class Bank {
 
     public void transaction(User user, String id) throws AccountNotFoundException, InsufficientFundsException{
         Account account = user.getAccountById(id);
-        account.withdraw(BigDecimal.valueOf(20));
+        account.withdraw(MAINTENANCE_FEE);
     }
     public void deposit(User user, String id, BigDecimal amount) throws AccountNotFoundException{
         Account account = user.getAccountById(id);
@@ -57,6 +59,8 @@ public class Bank {
         Account account = user.getAccountById(id);
         account.withdraw(amount);
     }
+
+    //TODO: тут использовать коллекцию,которую getNumOfAccounts выбросит
     public List<BigDecimal> checkBalance(User user) throws AccountNotFoundException{
         List<BigDecimal> balances = new ArrayList<>();
         for(int i = 1; i <= user.getNumOfAccounts(); i++){
@@ -70,8 +74,12 @@ public class Bank {
         Account account1 = currentUser.getAccountById(currentID);
         Account account2 = targetUser.getAccountById(targetID);
 
+        //FIXME: жесть дикая, надо придумать проверку
         account1.withdraw(cost);
         account2.deposit(cost);
+
+
     }
 
+    //TODO: банк, в теории, должен меньше знать
 }

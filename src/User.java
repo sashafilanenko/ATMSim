@@ -32,6 +32,8 @@ public class User {
         return account.getBalance();
     }
 
+
+    //TODO: миграция на Мэп
     public Account getAccountById(String accountId) throws AccountNotFoundException{
         for (Account account : accounts) {
             if (account.getAccountID().equals(accountId)) {
