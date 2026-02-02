@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ATM {
-    //TODO: пора бы и махнуть на Swing
-    //TODO: хешировать пароли, шифровать + соль, возможно мигрировать на проект с maven
     private final Bank bank;
     private final Scanner scan = new Scanner(System.in);;
-
     private User currentUser;
+
 
     ATM(Bank bank){
         this.bank = bank;
@@ -22,6 +20,47 @@ public class ATM {
         this.currentUser = current;
     }
 
+    //функциональный интерфейс, просто абстракция
+    @FunctionalInterface
+    interface UserAction{
+        void execute() throws Exception;
+    }
+
+    //обработчик ошибок
+    private void performAction(UserAction action){
+        try {
+            action.execute();
+        } catch (NumberFormatException e) {
+            System.out.println("Ошибка ввода числа. Попробуйте снова.");
+        } catch (AccountNotFoundException | InsufficientFundsException | AuthException | IllegalArgumentException e) {
+            System.out.println("Ошибка операции: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Произошла системная ошибка: " + e.getMessage());
+        }
+    }
+
+    //процессор ввода/вывода дабы избежать копипаст
+    private String prompt(String message){
+        System.out.println(message);
+        return scan.nextLine().trim();
+    }
+
+    //процессор ввода/вывода переменных, заведомо типа BigDecimal
+    private BigDecimal promptBigDecimal(String message){
+        System.out.println(message);
+        String input = scan.nextLine().trim().replace(",", ".");
+        return new BigDecimal(input);
+    }
+
+    private List<BigDecimal> promptBalanceList(User currentUser){
+        List<BigDecimal> balances = bank.checkBalance(currentUser);
+        System.out.println("Балансы: " + balances);
+    }
+
+    //TODO: пора бы и махнуть на Swing
+    //TODO: хешировать пароли, шифровать + соль, возможно мигрировать на проект с maven
+
+    // приветственное меню
     public void start() {
         System.out.println("Добро пожаловать, войдите в аккаунт");
         while (currentUser == null) {
@@ -42,10 +81,9 @@ public class ATM {
         menu();
     }
 
-
-    //TODO: переделать этот огромный и страшный метод, кейсы
-    //TODO: надо потестировать трим в BigDecimal, обработать ситуацию с воодом запятой
+    // меню основное (выбор действий)
     public void menu() {
+
         boolean running = true;
 
         while (running) {
@@ -58,6 +96,7 @@ public class ATM {
                     "6) выйти");
 
             int action;
+
             try {
                 action = Integer.parseInt(scan.nextLine().trim());
             } catch (NumberFormatException e) {
@@ -65,68 +104,42 @@ public class ATM {
                 return;
             }
 
-            switch (action) {
-                case 1 -> {
-                    try {
-                        System.out.println("Введите ID счёта для оплаты обслуживания:");
-                        String id = scan.nextLine();
-                        bank.transaction(currentUser, id);
-                        System.out.println("Оплата выполнена.");
-                    } catch (AccountNotFoundException | InsufficientFundsException e) {
-                        System.out.println("Ошибка: " + e.getMessage());
-                    }
-                }
-                case 2 -> {
-                    try {
-                        System.out.println("Введите ID счёта для пополнения:");
-                        String id = scan.nextLine();
-                        System.out.println("Введите сумму (например 100.50):");
-                        BigDecimal amount = new BigDecimal(scan.nextLine().trim());
-                        bank.deposit(currentUser, id, amount);
-                        System.out.println("Пополнение выполнено.");
-                    } catch (AccountNotFoundException | IllegalArgumentException e) {
-                        System.out.println("Ошибка: " + e.getMessage());
-                    }
-                }
-                case 3 -> {
-                    try {
-                        System.out.println("Введите ID счёта для снятия:");
-                        String id = scan.nextLine();
-                        System.out.println("Введите сумму:");
-                        BigDecimal amount = new BigDecimal(scan.nextLine().trim());
-                        bank.withdraw(currentUser, id, amount);
-                        System.out.println("Снятие выполнено.");
-                    } catch (AccountNotFoundException | InsufficientFundsException | IllegalArgumentException e) {
-                        System.out.println("Ошибка: " + e.getMessage());
-                    }
-                }
-                case 4 -> {
-                    try {
-                        List<BigDecimal> balances = bank.checkBalance(currentUser);
-                        System.out.println("Балансы: " + balances);
-                    } catch (AccountNotFoundException e) {
-                        System.out.println("Ошибка: " + e.getMessage());
-                    }
-                }
-                case 5 -> {
-                    try {
-                        System.out.println("Введите ID вашего счёта для перевода:");
-                        String fromId = scan.nextLine();
-                        System.out.println("Введите имя получателя:");
-                        String targetName = scan.nextLine();
-                        System.out.println("Введите ID счёта получателя:");
-                        String toId = scan.nextLine();
-                        System.out.println("Введите сумму перевода:");
-                        BigDecimal amount = new BigDecimal(scan.nextLine().trim());
+            if (action == 6) { running = false; continue;}
 
-                        User targetUser = bank.getTargetUser(targetName);
-                        bank.transfer(currentUser, fromId, targetUser, toId, amount);
-                        System.out.println("Перевод выполнен.");
-                    } catch (AccountNotFoundException | InsufficientFundsException | IllegalArgumentException e) {
-                        System.out.println("Ошибка: " + e.getMessage());
-                    }
-                }
-                case 6 -> running = false;
+            switch (action) {
+                case 1 -> performAction(() -> {
+                    String id = prompt("Введите ID счёта для оплаты обслуживания: ");
+                    bank.transaction(currentUser, id);
+                    System.out.println("Оплата выполнена.");
+                });
+                case 2 -> performAction(() -> {
+                    String id = prompt("Введите ID счёта для пополнения: ");
+                    BigDecimal amount = promptBigDecimal("Введите сумму (например 100.50): ");
+                    bank.deposit(currentUser, id, amount);
+                    System.out.println("Пополнение выполнено.");
+                });
+                case 3 -> performAction(() -> {
+                    String id = prompt("Введите ID счёта для снятия:");
+                    List<BigDecimal> balances = bank.checkBalance(currentUser);
+                    System.out.println("Балансы: " + balances);
+                    BigDecimal amount = promptBigDecimal("Введите сумму:");
+                    bank.withdraw(currentUser, id, amount);
+                    System.out.println("Снятие выполнено.");
+                });
+                case 4 -> performAction(() -> {
+                    List<BigDecimal> balances = bank.checkBalance(currentUser);
+                    System.out.println("Балансы: " + balances);
+                });
+                case 5 -> performAction(() -> {
+                    String fromId = prompt("Введите ID вашего счёта для перевода:" );
+                    String targetName = prompt("Введите имя получателя:" );
+                    String toId = prompt("Введите ID счёта получателя:" );
+                    BigDecimal amount = promptBigDecimal("Введите сумму перевода: ");
+
+                    User targetUser = bank.getTargetUser(targetName);
+                    bank.transfer(currentUser, fromId, targetUser, toId, amount);
+                    System.out.println("Перевод выполнен.");
+                });
                 default -> System.out.println("Неверный выбор");
             }
         }
