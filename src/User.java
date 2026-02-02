@@ -1,27 +1,36 @@
 import exceptions.AccountNotFoundException;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 
 public class User {
-    private String name;
-    private String password;
-    private List<Account> accounts;
+    private final String login;
+    private final String fullName;
+    private String passwordHash;
+    private Map<String, Account> accounts = new HashMap<>();
 
-    User(String n, String p, List<Account> ac){
-        this.name = n;
-        this.password = p;
-        this.accounts = ac;
+    public User(String login, String fullName, String passwordHash) {
+        this.login = login;
+        this.fullName = fullName;
+        this.passwordHash = passwordHash;
+    }
+
+    public void addAccount(Account account){
+        accounts.put(account.getAccountID(), account);
+    }
+
+    public String getLogin() { return login; }
+    public String getFullName() { return fullName; }
+
+    public boolean verifyPassword(String hashToVerify) {
+        return this.passwordHash.equals(hashToVerify);
+    }
+
+    public Collection<Account> getAccounts() {
+        return Collections.unmodifiableCollection(accounts.values());
     }
 
 
-    public String getName() {
-        return name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 
     public int getNumOfAccounts(){
         return accounts.size();
@@ -33,15 +42,11 @@ public class User {
     }
 
 
-    //TODO: миграци€ на ћэп
-    public Account getAccountById(String accountId) throws AccountNotFoundException{
-        for (Account account : accounts) {
-            if (account.getAccountID().equals(accountId)) {
-                return account;
-            }
+    public Account getAccountById(String accountId) throws AccountNotFoundException {
+        if (!accounts.containsKey(accountId)) {
+            throw new AccountNotFoundException("—чет с ID " + accountId + " не найден.");
         }
-        throw new AccountNotFoundException("счет не найден " + accountId + "у пользовател€ " + name);
+        return accounts.get(accountId);
     }
-
 
 }

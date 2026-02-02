@@ -1,37 +1,63 @@
 import exceptions.AccountNotFoundException;
 import exceptions.InsufficientFundsException;
 import exceptions.AuthException;
+import exceptions.TransactionException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 public class Bank {
-    private Map<String, User> users = new HashMap<>();
 
+    private final Random random = new Random();
+    private Map<String, User> users = new HashMap<>();
     private static final BigDecimal MAINTENANCE_FEE = BigDecimal.valueOf(20);
 
-    public void addUser(User user) throws AccountNotFoundException{
-        if(user == null){
-            throw new AccountNotFoundException("объект user нулевой");
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes());
+            return Base64.getEncoder().encodeToString(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Ошибка алгоритма хеширования", e);
         }
-        users.put(user.getName(), user);
     }
 
-    public List<User> getUsers(){
-        return List.copyOf(users.values());
+    public void registerUser(String login, String fullName, String rawPassword) {
+        if (users.containsKey(login)) {
+            throw new IllegalArgumentException("Пользователь с таким логином уже существует");
+        }
+        String passwordHash = hashPassword(rawPassword);
+        User newUser = new User(login, fullName, passwordHash);
+        users.put(login, newUser);
     }
 
-    public User authenticate(String login, String password) throws AuthException{
+    public String createAccount(String userLogin, BigDecimal initialBalance) throws AccountNotFoundException {
+        User user = users.get(userLogin);
+        if (user == null) {
+            throw new AccountNotFoundException("Пользователь не найден");
+        }
 
+        String newAccountId = generateAccountId();
+
+        Account newAccount = new Account(newAccountId, initialBalance);
+        user.addAccount(newAccount);
+
+        return newAccountId;
+    }
+
+    private String generateAccountId() {
+        int number = 100000 + random.nextInt(900000);
+        return String.valueOf(number);
+    }
+
+    public User authenticate(String login, String password) throws AuthException {
         User user = users.get(login);
-
-        if(user != null && user.getPassword().equals(password)){
+        if (user != null && user.verifyPassword(hashPassword(password))) {
             return user;
         }
-        throw new AuthException("ошибка входа");
+        throw new AuthException("Неверный логин или пароль");
     }
 
     public User getTargetUser(String login) throws AccountNotFoundException{
@@ -61,24 +87,36 @@ public class Bank {
     }
 
     //TODO: тут использовать коллекцию,которую getNumOfAccounts выбросит
-    public List<BigDecimal> checkBalance(User user) throws AccountNotFoundException{
+    public List<BigDecimal> checkBalance(User user){
+        if (user == null) throw new IllegalArgumentException("пользователь нулевой");
         List<BigDecimal> balances = new ArrayList<>();
-        for(int i = 1; i <= user.getNumOfAccounts(); i++){
-            balances.add(user.getBalanceByID(String.valueOf(i)));
+        for (Account acc : user.getAccounts()) {
+            balances.add(acc.getBalance());
         }
         return balances;
     }
 
-    public void transfer(User currentUser, String currentID, User targetUser, String targetID, BigDecimal cost)
-            throws AccountNotFoundException, InsufficientFundsException{
-        Account account1 = currentUser.getAccountById(currentID);
-        Account account2 = targetUser.getAccountById(targetID);
+    public void transfer(User currentUser, String fromId, String targetLogin, String toId, BigDecimal amount)
+            throws AccountNotFoundException, InsufficientFundsException, TransactionException {
 
-        //FIXME: жесть дикая, надо придумать проверку
-        account1.withdraw(cost);
-        account2.deposit(cost);
+        User targetUser = users.get(targetLogin);
+        if (targetUser == null) {
+            throw new AccountNotFoundException("Получатель с логином " + targetLogin + " не найден");
+        }
 
+        Account sourceAcc = currentUser.getAccountById(fromId);
+        Account targetAcc = targetUser.getAccountById(toId);
 
+        if (sourceAcc.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientFundsException("Недостаточно средств для перевода");
+        }
+
+        if (sourceAcc.equals(targetAcc)) {
+            throw new TransactionException("Нельзя перевести деньги на тот же самый счет");
+        }
+
+        sourceAcc.withdraw(amount);
+        targetAcc.deposit(amount);
     }
 
     //TODO: банк, в теории, должен меньше знать

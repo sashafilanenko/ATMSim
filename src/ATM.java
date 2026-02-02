@@ -1,10 +1,12 @@
 import exceptions.AccountNotFoundException;
 import exceptions.InsufficientFundsException;
 import exceptions.AuthException;
+import exceptions.TransactionException;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
+
 
 public class ATM {
     private final Bank bank;
@@ -34,6 +36,8 @@ public class ATM {
             System.out.println("Ошибка ввода числа. Попробуйте снова.");
         } catch (AccountNotFoundException | InsufficientFundsException | AuthException | IllegalArgumentException e) {
             System.out.println("Ошибка операции: " + e.getMessage());
+        } catch (TransactionException e) {
+            System.out.println("Транзакция отменена: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Произошла системная ошибка: " + e.getMessage());
         }
@@ -52,9 +56,20 @@ public class ATM {
         return new BigDecimal(input);
     }
 
-    private List<BigDecimal> promptBalanceList(User currentUser){
-        List<BigDecimal> balances = bank.checkBalance(currentUser);
-        System.out.println("Балансы: " + balances);
+    private void printBalances(User currentUser) {
+        var accounts = currentUser.getAccounts();
+
+        System.out.println("\n--- Ваши счета ---");
+        if (accounts.isEmpty()) {
+            System.out.println("У вас пока нет открытых счетов.");
+        } else {
+            for (Account acc : accounts) {
+                System.out.printf("Счет #%-8s | Баланс: %,.2f\n",
+                        acc.getAccountID(),
+                        acc.getBalance());
+            }
+        }
+        System.out.println("------------------\n");
     }
 
     //TODO: пора бы и махнуть на Swing
@@ -71,7 +86,7 @@ public class ATM {
                 System.out.println("Введите пароль:");
                 String password = scan.nextLine();
                 setCurrentUser(bank.authenticate(login, password));
-                System.out.println("Успешный вход, привет " + currentUser.getName());
+                System.out.println("Успешный вход, привет " + currentUser.getLogin());
 
             } catch (AuthException ae) {
                 System.out.println("Авторизация не удалась: " + ae.getMessage());
@@ -95,49 +110,62 @@ public class ATM {
                     "5) перевести деньги другому пользователю\n" +
                     "6) выйти");
 
+            String input = prompt("Выберите действие:");
             int action;
 
             try {
-                action = Integer.parseInt(scan.nextLine().trim());
+                action = Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Неверный ввод. Завершение сеанса.");
-                return;
+                System.out.println("Введите число. ");
+                continue;
             }
 
-            if (action == 6) { running = false; continue;}
+            //TODO: добавить маппинг в энам
 
-            switch (action) {
-                case 1 -> performAction(() -> {
+            Operations op = null;
+            if (action == 1) op = Operations.TRANSACTION;
+            else if (action == 2) op = Operations.DEPOSIT;
+            else if (action == 3) op = Operations.WITHDRAW;
+            else if (action == 4) op = Operations.CHECK_BALANCE;
+            else if (action == 5) op = Operations.TRANSFER;
+            else if (action == 6) { running = false; continue; }
+
+            if (op == null) {
+                System.out.println("Неверная команда");
+                continue;
+            }
+
+
+
+            switch (op) {
+                case TRANSACTION -> performAction(() -> {
                     String id = prompt("Введите ID счёта для оплаты обслуживания: ");
                     bank.transaction(currentUser, id);
                     System.out.println("Оплата выполнена.");
                 });
-                case 2 -> performAction(() -> {
+                case DEPOSIT -> performAction(() -> {
                     String id = prompt("Введите ID счёта для пополнения: ");
                     BigDecimal amount = promptBigDecimal("Введите сумму (например 100.50): ");
                     bank.deposit(currentUser, id, amount);
                     System.out.println("Пополнение выполнено.");
                 });
-                case 3 -> performAction(() -> {
+                case WITHDRAW -> performAction(() -> {
                     String id = prompt("Введите ID счёта для снятия:");
-                    List<BigDecimal> balances = bank.checkBalance(currentUser);
-                    System.out.println("Балансы: " + balances);
+                    printBalances(currentUser);
                     BigDecimal amount = promptBigDecimal("Введите сумму:");
                     bank.withdraw(currentUser, id, amount);
                     System.out.println("Снятие выполнено.");
                 });
-                case 4 -> performAction(() -> {
-                    List<BigDecimal> balances = bank.checkBalance(currentUser);
-                    System.out.println("Балансы: " + balances);
+                case CHECK_BALANCE -> performAction(() -> {
+                    printBalances(currentUser);
                 });
-                case 5 -> performAction(() -> {
+                case TRANSFER -> performAction(() -> {
                     String fromId = prompt("Введите ID вашего счёта для перевода:" );
-                    String targetName = prompt("Введите имя получателя:" );
+                    String targetLogin = prompt("Введите Логин получателя:");
                     String toId = prompt("Введите ID счёта получателя:" );
                     BigDecimal amount = promptBigDecimal("Введите сумму перевода: ");
 
-                    User targetUser = bank.getTargetUser(targetName);
-                    bank.transfer(currentUser, fromId, targetUser, toId, amount);
+                    bank.transfer(currentUser, fromId, targetLogin, toId, amount);
                     System.out.println("Перевод выполнен.");
                 });
                 default -> System.out.println("Неверный выбор");
