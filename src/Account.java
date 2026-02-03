@@ -1,9 +1,11 @@
 import exceptions.InsufficientFundsException;
 
 import java.math.BigDecimal;
+
+//TODO: решить вопрос с потообразностью, ликвидировать возможность гонок
 public class Account {
 
-    private String accountID;
+    private final String accountID;
     private BigDecimal balance;
 
     //TODO: придумать как создавать аккаунты, подтягивать их из БД
@@ -41,7 +43,7 @@ public class Account {
             throw new IllegalArgumentException("сумма должна быть положительной");
         }
         if(balance.compareTo(amount) < 0){
-            throw new InsufficientFundsException("недостаточно среств на счете " + accountID);
+            throw new InsufficientFundsException("недостаточно средств на счете " + accountID);
         }
         balance = balance.subtract(amount);
     }

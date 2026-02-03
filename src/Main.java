@@ -1,16 +1,14 @@
+import javax.swing.*;
 import java.math.BigDecimal;
 
 public class Main {
     public static void main(String[] args) {
-
         Bank bank = new Bank();
-        ConsoleUIService ui = new ConsoleUIService();
-
         initializeData(bank);
 
-        ATM atm = new ATM(bank, ui);
-        atm.start();
-
+        SwingUtilities.invokeLater(() -> {
+            new SwingATM(bank).setVisible(true);
+        });
     }
     private static void initializeData(Bank bank) {
         try {
