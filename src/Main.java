@@ -1,16 +1,14 @@
-import exceptions.AccountNotFoundException;
-
 import java.math.BigDecimal;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
 
         Bank bank = new Bank();
+        ConsoleUIService ui = new ConsoleUIService();
 
         initializeData(bank);
 
-        ATM atm = new ATM(bank);
+        ATM atm = new ATM(bank, ui);
         atm.start();
 
     }
