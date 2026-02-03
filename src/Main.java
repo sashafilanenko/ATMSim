@@ -1,34 +1,32 @@
+import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
 
 public class Main {
     public static void main(String[] args) {
-
+        // 1. Инициализация Данных (Model)
         Bank bank = new Bank();
-        ConsoleUIService ui = new ConsoleUIService();
-
         initializeData(bank);
 
-        ATM atm = new ATM(bank, ui);
-        atm.start();
+        // 2. Запуск GUI в потоке AWT
+        SwingUtilities.invokeLater(() -> {
+            // Создаем View
+            MainFrame view = new MainFrame();
 
+            // Создаем Controller (он сам свяжет View и Model)
+            new SwingBankController(bank, view);
+
+            // Показываем окно
+            view.setVisible(true);
+        });
     }
+
     private static void initializeData(Bank bank) {
+        // Та же логика инициализации, что и у вас
         try {
-
-            bank.registerUser("alex_dev", "Alexey Petrov", "pass123");
-            bank.registerUser("sam_boss", "Sam Smith", "secure555");
-
-            bank.createAccount("alex_dev", BigDecimal.valueOf(0));
-            bank.createAccount("alex_dev", BigDecimal.valueOf(500.00));
-
-            bank.createAccount("sam_boss", BigDecimal.valueOf(10000.00));
-
-            System.out.println("Система инициализирована. Тестовые пользователи загружены.\n");
-
+            bank.registerUser("alex", "Alexey", "123");
+            bank.createAccount("alex", BigDecimal.valueOf(1000));
         } catch (Exception e) {
-            System.err.println("Ошибка инициализации данных: " + e.getMessage());
             e.printStackTrace();
         }
     }
 }
-
