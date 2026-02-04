@@ -45,6 +45,10 @@ public class MainFrame extends JFrame {
     public void showError(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Ошибка", JOptionPane.ERROR_MESSAGE);
     }
+
+    public void shawApplyButtons(String msg){
+        JOptionPane.showMessageDialog(this, msg, "перевести?", JOptionPane.ERROR_MESSAGE);
+    }
     public void showInfo(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Инфо", JOptionPane.INFORMATION_MESSAGE);
     }

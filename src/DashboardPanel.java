@@ -7,7 +7,7 @@ public class DashboardPanel extends JPanel {
     private JTextArea infoArea = new JTextArea(10, 30);
     private JButton depositBtn = new JButton("Пополнить");
     private JButton withdrawBtn = new JButton("Снять");
-    private JButton transactionBtn = new JButton("jgkfbf");
+    private JButton transactionBtn = new JButton("Оплата обслуживания");
     private JButton transferBtn = new JButton("Перевод");
     private JButton refreshBtn = new JButton("Обновить баланс");
     private JButton logoutBtn = new JButton("Выход");
@@ -35,7 +35,6 @@ public class DashboardPanel extends JPanel {
     public void setWelcomeMessage(String msg) { welcomeLabel.setText(msg); }
     public void updateInfoArea(String info) { infoArea.setText(info); }
 
-    // Методы для подписки на события
     public void addLogoutListener(ActionListener l) { logoutBtn.addActionListener(l); }
     public void addDepositListener(ActionListener l) { depositBtn.addActionListener(l); }
     public void addWithdrawListener(ActionListener l) { withdrawBtn.addActionListener(l); }
