@@ -8,7 +8,7 @@ public class Account {
     private final String accountID;
     private BigDecimal balance;
 
-    //TODO: придумать как создавать аккаунты, подт€гивать их из Ѕƒ
+    //TODO придумать как создавать аккаунты, подт€гивать их из Ѕƒ
 
     Account(String ID, BigDecimal b){
         this.accountID = ID;
@@ -37,7 +37,7 @@ public class Account {
 
     public void withdraw(BigDecimal amount) throws InsufficientFundsException{
         if(amount == null){
-            throw new InsufficientFundsException("сумма не может быть равна нулю");
+            throw new IllegalArgumentException("сумма не может быть равна нулю");
         }
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
             throw new IllegalArgumentException("сумма должна быть положительной");

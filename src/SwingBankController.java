@@ -14,25 +14,17 @@ public class SwingBankController {
     }
 
     private void initController() {
-        // --- Экран входа ---
         view.getLoginPanel().addLoginListener(e -> handleLogin());
 
-        // --- Экран операций (Dashboard) ---
         DashboardPanel dashboard = view.getDashboardPanel();
 
         dashboard.addLogoutListener(e -> handleLogout());
         dashboard.addBalanceListener(e -> refreshBalance());
-
-        // Используем лямбды для вызова методов-обработчиков
         dashboard.addTransactionListener(e -> handleTransaction());
         dashboard.addDepositListener(e -> handleDeposit());
         dashboard.addWithdrawListener(e -> handleWithdraw());
         dashboard.addTransferListener(e -> handleTransfer());
     }
-
-    // ==========================================
-    // ЛОГИКА АУТЕНТИФИКАЦИИ
-    // ==========================================
 
     private void handleLogin() {
         String login = view.getLoginPanel().getLogin();
@@ -46,7 +38,7 @@ public class SwingBankController {
         try {
             currentUser = bank.authenticate(login, password);
             view.showDashboard(currentUser.getFullName());
-            refreshBalance(); // Загружаем данные сразу при входе
+            refreshBalance();
         } catch (AuthException e) {
             view.showError("Ошибка входа: " + e.getMessage());
         } catch (Exception e) {
@@ -66,10 +58,6 @@ public class SwingBankController {
             view.showLogin();
         }
     }
-
-    // ==========================================
-    // ЛОГИКА ОПЕРАЦИЙ
-    // ==========================================
 
     private void refreshBalance() {
         if (currentUser == null) return;
@@ -93,7 +81,7 @@ public class SwingBankController {
 
     private void handleDeposit() {
         String accountId = askForAccountId("пополнения");
-        if (accountId == null) return; // Пользователь нажал отмену
+        if (accountId == null) return;
 
         BigDecimal amount = askForAmount("Введите сумму пополнения:");
         if (amount == null) return;
@@ -145,30 +133,20 @@ public class SwingBankController {
             handleSystemError(e);
         }
     }
-    /**
-     * Реализация перевода.
-     * Здесь мы последовательно запрашиваем данные через диалоговые окна.
-     * Для более сложного UI можно было бы создать отдельную форму (JDialog),
-     * но последовательные окна проще в реализации через стандартный JOptionPane.
-     */
+
     private void handleTransfer() {
-        // 1. Откуда
         String fromId = askForAccountId("списания (Ваш счет)");
         if (fromId == null) return;
 
-        // 2. Кому (Логин)
         String targetLogin = view.promptInput("Введите логин получателя:");
         if (targetLogin == null || targetLogin.trim().isEmpty()) return;
 
-        // 3. Куда (ID счета получателя)
         String toId = view.promptInput("Введите ID счета получателя:");
         if (toId == null || toId.trim().isEmpty()) return;
 
-        // 4. Сколько
         BigDecimal amount = askForAmount("Введите сумму перевода:");
         if (amount == null) return;
 
-        // Подтверждение
         int confirm = JOptionPane.showConfirmDialog(view,
                 String.format("Перевести %s пользователю %s?\nС счета: %s\nНа счет: %s",
                         amount, targetLogin, fromId, toId),
@@ -192,17 +170,9 @@ public class SwingBankController {
         }
     }
 
-    // ==========================================
-    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ (HELPERS)
-    // ==========================================
-
-    /**
-     * Запрашивает ID счета. Если у пользователя только 1 счет, можно было бы подставлять его автоматически,
-     * но для универсальности просим ввод.
-     */
     private String askForAccountId(String operationName) {
         String input = view.promptInput("Введите ID счета для " + operationName + ":");
-        if (input == null) return null; // Cancel pressed
+        if (input == null) return null;
 
         input = input.trim();
         if (input.isEmpty()) {
@@ -212,15 +182,12 @@ public class SwingBankController {
         return input;
     }
 
-    /**
-     * Безопасный запрос суммы с парсингом запятых и обработкой ошибок формата.
-     */
     private BigDecimal askForAmount(String message) {
         while (true) {
             String input = view.promptInput(message);
-            if (input == null) return null; // Cancel pressed
+            if (input == null) return null;
 
-            input = input.trim().replace(",", "."); // Разрешаем и запятую, и точку
+            input = input.trim().replace(",", ".");
 
             try {
                 BigDecimal amount = new BigDecimal(input);
@@ -237,6 +204,6 @@ public class SwingBankController {
 
     private void handleSystemError(Exception e) {
         view.showError("Критическая ошибка: " + e.getMessage());
-        e.printStackTrace(); // Логируем в консоль для разработчика
+        e.printStackTrace();
     }
 }
