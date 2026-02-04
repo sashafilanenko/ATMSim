@@ -1,11 +1,17 @@
 import exceptions.*;
 import javax.swing.*;
 import java.math.BigDecimal;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 public class SwingBankController {
     private final Bank bank;
     private final MainFrame view;
     private User currentUser;
+
+    private static final Logger LOG = AppLogger.getLogger(SwingBankController.class.getName());
+    private final String sessionId = UUID.randomUUID().toString();
+
 
     public SwingBankController(Bank bank, MainFrame view) {
         this.bank = bank;
@@ -28,6 +34,7 @@ public class SwingBankController {
 
     private void handleLogin() {
         String login = view.getLoginPanel().getLogin();
+        LOG.info(String.format("session=%s action=LOGIN_attempt user=%s", sessionId, login));
         String password = view.getLoginPanel().getPassword();
 
         if (login.isEmpty() || password.isEmpty()) {
@@ -37,6 +44,7 @@ public class SwingBankController {
 
         try {
             currentUser = bank.authenticate(login, password);
+            LOG.info(String.format("session=%s action=LOGIN_success user=%s", sessionId, currentUser.getLogin()));
             view.showDashboard(currentUser.getFullName());
             refreshBalance();
         } catch (AuthException e) {
@@ -200,6 +208,12 @@ public class SwingBankController {
                 view.showError("Некорректный формат числа. Пример: 100.50");
             }
         }
+    }
+
+    private String mask(String accountId) {
+        if (accountId == null) return "null";
+        if (accountId.length() <= 4) return "****";
+        return "****" + accountId.substring(accountId.length() - 4);
     }
 
     private void handleSystemError(Exception e) {

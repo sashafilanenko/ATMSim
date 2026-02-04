@@ -1,0 +1,3 @@
+2026-02-05T01:14:39.887362+03:00 | INFO | Main | Application starting...
+2026-02-05T01:14:48.28614+03:00 | INFO | SwingBankController | session=173c9688-3863-4965-8e8c-ba9d9932d42e action=LOGIN_attempt user=alex
+2026-02-05T01:14:48.28614+03:00 | INFO | SwingBankController | session=173c9688-3863-4965-8e8c-ba9d9932d42e action=LOGIN_success user=alex

@@ -1,8 +1,15 @@
 import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
+import java.util.logging.Logger;
 
 public class Main {
     public static void main(String[] args) {
+
+        AppLogger.init();
+
+        Logger mainLog = AppLogger.getLogger(Main.class.getName());
+        mainLog.info("Application starting...");
+
         Bank bank = new Bank();
         initializeData(bank);
 
