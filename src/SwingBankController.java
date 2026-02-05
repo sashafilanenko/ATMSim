@@ -60,6 +60,7 @@ public class SwingBankController {
                 "Вы уверены, что хотите выйти?",
                 "Выход",
                 JOptionPane.YES_NO_OPTION);
+        LOG.info(String.format("session=%s action=LOGOUT user=%s", sessionId));
 
         if (confirm == JOptionPane.YES_OPTION) {
             currentUser = null;
