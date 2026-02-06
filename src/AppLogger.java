@@ -1,16 +1,17 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.*;
 
 public class AppLogger {
-    private static final String LOG_DIR = "logs";               // папка для логов (можно изменить)
-    private static final String LOG_PATTERN = "mybank.log.%u.%g"; // шаблон имени файла
-    private static final int LIMIT = 1024 * 1024;               // 1 MB на файл
-    private static final int COUNT = 5;                         // хранить до 5 файлов (ротация)
+    private static final String LOG_DIR = "logs";
+    private static final String LOG_PATTERN = "mybank.log.%u.%g";
+    private static final int LIMIT = 1024 * 1024;
+    private static final int COUNT = 5;
     private static final Level DEFAULT_LEVEL = Level.INFO;
 
     private static Logger rootLogger;
@@ -38,7 +39,9 @@ public class AppLogger {
                 private final DateTimeFormatter dt = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
                 @Override
                 public synchronized String format(LogRecord record) {
-                    String ts = ZonedDateTime.now(ZoneId.systemDefault()).format(dt);
+                    String ts = Instant.ofEpochMilli(record.getMillis())
+                            .atZone(ZoneId.systemDefault())
+                            .format(dt);
                     String level = record.getLevel().getName();
                     String loggerName = record.getLoggerName();
                     String msg = formatMessage(record);

@@ -1,3 +1,16 @@
 2026-02-05T01:14:39.887362+03:00 | INFO | Main | Application starting...
 2026-02-05T01:14:48.28614+03:00 | INFO | SwingBankController | session=173c9688-3863-4965-8e8c-ba9d9932d42e action=LOGIN_attempt user=alex
 2026-02-05T01:14:48.28614+03:00 | INFO | SwingBankController | session=173c9688-3863-4965-8e8c-ba9d9932d42e action=LOGIN_success user=alex
+2026-02-06T09:19:12.5152272+03:00 | INFO | Main | Application starting...
+2026-02-06T09:19:22.3520858+03:00 | INFO | SwingBankController | session=8fa07cc3-843c-4c13-9b2d-883527d9c502 action=LOGIN_attempt user=alex
+2026-02-06T09:19:22.3520858+03:00 | INFO | SwingBankController | session=8fa07cc3-843c-4c13-9b2d-883527d9c502 action=LOGIN_success user=alex
+2026-02-06T10:47:46.381+03:00 | INFO | Main | Application starting...
+2026-02-06T10:48:00.124+03:00 | INFO | SwingBankController | session=d6fc9f70-c2cf-4f33-8e3c-e8db54557a3f action=LOGIN_attempt user=alex
+2026-02-06T10:48:00.124+03:00 | INFO | SwingBankController | session=d6fc9f70-c2cf-4f33-8e3c-e8db54557a3f action=LOGIN_success user=alex
+2026-02-06T10:48:19.912+03:00 | INFO | SwingBankController | session=d6fc9f70-c2cf-4f33-8e3c-e8db54557a3f user=alex action=DEPOSIT_SUCCESS account=****9789 amount=20
+2026-02-06T10:51:27.335+03:00 | INFO | Main | Application starting...
+2026-02-06T10:51:39.384+03:00 | INFO | SwingBankController | session=c57d54ff-a223-42f4-8c38-629dfbf41de8 action=LOGIN_attempt user=alex
+2026-02-06T10:51:39.385+03:00 | INFO | SwingBankController | session=c57d54ff-a223-42f4-8c38-629dfbf41de8 action=LOGIN_success user=alex
+2026-02-06T10:51:57.529+03:00 | INFO | SwingBankController | session=c57d54ff-a223-42f4-8c38-629dfbf41de8 user=alex action=DEPOSIT_SUCCESS account=****8948 amount=1000
+2026-02-06T10:52:11.046+03:00 | INFO | SwingBankController | session=c57d54ff-a223-42f4-8c38-629dfbf41de8 user=alex action=DEPOSIT_SUCCESS account=****8948 amount=20
+2026-02-06T10:52:15.246+03:00 | INFO | SwingBankController | session=c57d54ff-a223-42f4-8c38-629dfbf41de8 action=LOGOUT user=alex

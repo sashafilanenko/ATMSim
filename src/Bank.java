@@ -14,6 +14,10 @@ public class Bank {
     private Map<String, User> users = new HashMap<>();
     private static final BigDecimal MAINTENANCE_FEE = BigDecimal.valueOf(20);
 
+    public BigDecimal getMaintenanceFee(){
+        return MAINTENANCE_FEE;
+    }
+
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

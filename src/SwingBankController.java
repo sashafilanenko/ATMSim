@@ -60,7 +60,11 @@ public class SwingBankController {
                 "Вы уверены, что хотите выйти?",
                 "Выход",
                 JOptionPane.YES_NO_OPTION);
-        LOG.info(String.format("session=%s action=LOGOUT user=%s", sessionId));
+                LOG.info(String.format(
+                "session=%s action=LOGOUT user=%s",
+                sessionId,
+                currentUser.getLogin()
+        ));
 
         if (confirm == JOptionPane.YES_OPTION) {
             currentUser = null;
@@ -99,6 +103,14 @@ public class SwingBankController {
             bank.deposit(currentUser, accountId, amount);
             view.showInfo("Счет " + accountId + " успешно пополнен на " + amount);
             refreshBalance();
+            LOG.info(String.format(
+                    "session=%s user=%s action=DEPOSIT_SUCCESS account=%s amount=%s",
+                    sessionId,
+                    currentUser.getLogin(),
+                    mask(accountId),
+                    amount
+            ));
+
         } catch (AccountNotFoundException | IllegalArgumentException e) {
             view.showError("Ошибка операции: " + e.getMessage());
         } catch (Exception e) {
@@ -117,6 +129,13 @@ public class SwingBankController {
             bank.withdraw(currentUser, accountId, amount);
             view.showInfo("Снятие " + amount + " со счета " + accountId + " выполнено.");
             refreshBalance();
+            LOG.info(String.format(
+                    "session=%s user=%s action=WITHDRAW_SUCCESS account=%s amount=%s",
+                    sessionId,
+                    currentUser.getLogin(),
+                    mask(accountId),
+                    amount
+            ));
         } catch (InsufficientFundsException e) {
             view.showError("Недостаточно средств: " + e.getMessage());
         } catch (AccountNotFoundException | IllegalArgumentException e) {
@@ -134,6 +153,13 @@ public class SwingBankController {
             bank.transaction(currentUser, accountId);
             view.showInfo("оплата готова");
             refreshBalance();
+            LOG.info(String.format(
+                    "session=%s user=%s action=TRANSACTION_SUCCESS account=%s amount=%s",
+                    sessionId,
+                    currentUser.getLogin(),
+                    mask(accountId),
+                    bank.getMaintenanceFee()
+            ));
         } catch (InsufficientFundsException e) {
             view.showError("Недостаточно средств: " + e.getMessage());
         } catch (AccountNotFoundException | IllegalArgumentException e) {
@@ -168,6 +194,15 @@ public class SwingBankController {
             bank.transfer(currentUser, fromId, targetLogin, toId, amount);
             view.showInfo("Перевод выполнен успешно!");
             refreshBalance();
+            LOG.info(String.format(
+                    "session=%s user=%s action=TRANSFER_SUCCESS from=%s to_user=%s to=%s amount=%s",
+                    sessionId,
+                    currentUser.getLogin(),
+                    mask(fromId),
+                    targetLogin,
+                    mask(toId),
+                    amount
+            ));
         } catch (AccountNotFoundException e) {
             view.showError("Ошибка реквизитов: " + e.getMessage());
         } catch (InsufficientFundsException e) {
