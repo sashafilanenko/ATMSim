@@ -1,6 +1,10 @@
+package UI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+
+
 
 public class LoginPanel extends JPanel {
     private JTextField userField = new JTextField(15);

@@ -1,5 +1,8 @@
+package UI;
+
 import javax.swing.*;
 import java.awt.*;
+
 
 public class MainFrame extends JFrame {
     private CardLayout cardLayout;
@@ -9,7 +12,7 @@ public class MainFrame extends JFrame {
     private DashboardPanel dashboardPanel;
 
     public MainFrame() {
-        setTitle("My Swing Bank ATM");
+        setTitle("My Swing Logic.Bank ATM");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
         setLocationRelativeTo(null);
@@ -37,11 +40,9 @@ public class MainFrame extends JFrame {
         cardLayout.show(mainPanel, "DASHBOARD");
     }
 
-    // Геттеры для контроллера
     public LoginPanel getLoginPanel() { return loginPanel; }
     public DashboardPanel getDashboardPanel() { return dashboardPanel; }
 
-    // Утилитарные методы для диалогов
     public void showError(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Ошибка", JOptionPane.ERROR_MESSAGE);
     }

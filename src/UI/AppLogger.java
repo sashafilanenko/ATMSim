@@ -1,11 +1,13 @@
+package UI;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.*;
+
 
 public class AppLogger {
     private static final String LOG_DIR = "logs";

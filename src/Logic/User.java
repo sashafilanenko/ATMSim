@@ -1,4 +1,7 @@
+package Logic;
+
 import exceptions.AccountNotFoundException;
+
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -29,8 +32,6 @@ public class User {
     public Collection<Account> getAccounts() {
         return Collections.unmodifiableCollection(accounts.values());
     }
-
-
 
     public int getNumOfAccounts(){
         return accounts.size();

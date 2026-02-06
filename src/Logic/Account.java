@@ -1,14 +1,14 @@
+package Logic;
+
 import exceptions.InsufficientFundsException;
+
 
 import java.math.BigDecimal;
 
-//TODO: решить вопрос с потообразностью, ликвидировать возможность гонок
 public class Account {
 
     private final String accountID;
     private BigDecimal balance;
-
-    //TODO придумать как создавать аккаунты, подтягивать их из БД
 
     Account(String ID, BigDecimal b){
         this.accountID = ID;
@@ -23,7 +23,6 @@ public class Account {
         return accountID;
     }
 
-    //TODO: навести порядок с ошибками, избавиться от дублирования кода, мб вынести валидацию сумм в приват метод
 
     public void deposit(BigDecimal amount){
         if(amount == null){

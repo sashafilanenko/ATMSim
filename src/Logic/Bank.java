@@ -1,3 +1,5 @@
+package Logic;
+
 import exceptions.*;
 
 import java.math.BigDecimal;
@@ -5,12 +7,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+
 public class Bank {
 
-    //TODO: пока костыль, надо решить проблему с не уникальными значениями
     private final Random random = new Random();
 
-    //TODO: также решить проблему с потообразностью ConcurrentHashMap
     private Map<String, User> users = new HashMap<>();
     private static final BigDecimal MAINTENANCE_FEE = BigDecimal.valueOf(20);
 
@@ -50,7 +51,6 @@ public class Bank {
 
         return newAccountId;
     }
-    //TODO: как нибудь перепишу на уникальные ID
     private String generateAccountId() {
         int number = 100000 + random.nextInt(900000);
         return String.valueOf(number);
@@ -90,7 +90,6 @@ public class Bank {
         account.withdraw(amount);
     }
 
-    //TODO: тут использовать коллекцию,которую getNumOfAccounts выбросит
     public List<BigDecimal> checkBalance(User user){
         if (user == null) throw new IllegalArgumentException("пользователь нулевой");
         List<BigDecimal> balances = new ArrayList<>();
@@ -123,5 +122,4 @@ public class Bank {
         targetAcc.deposit(amount);
     }
 
-    //TODO: банк, в теории, должен меньше знать
 }

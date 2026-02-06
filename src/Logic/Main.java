@@ -1,3 +1,7 @@
+package Logic;
+
+import UI.*;
+
 import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
 import java.util.logging.Logger;

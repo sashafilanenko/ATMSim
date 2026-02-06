@@ -1,6 +1,10 @@
+package UI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+
+
 
 public class DashboardPanel extends JPanel {
     private JLabel welcomeLabel = new JLabel("Привет!");

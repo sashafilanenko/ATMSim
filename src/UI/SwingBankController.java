@@ -1,3 +1,8 @@
+package UI;
+
+import Logic.*;
+
+
 import exceptions.*;
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -146,7 +151,7 @@ public class SwingBankController {
     }
 
     public void handleTransaction(){
-        String accountId = askForAccountId("jgkfnf eckeu");
+        String accountId = askForAccountId("Оплата услуг");
         if (accountId == null) return;
 
         try {
