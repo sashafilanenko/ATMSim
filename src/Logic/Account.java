@@ -14,7 +14,6 @@ public class Account {
         this.accountID = ID;
         this.balance = b;
     }
-
     public BigDecimal getBalance() {
         return balance;
     }
