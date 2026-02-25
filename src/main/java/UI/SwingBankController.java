@@ -1,24 +1,25 @@
-package main.java.UI;
+package UI;
 
-import main.java.Logic.*;
+import Logic.BankService;
+import Logic.Account;
+import Logic.User;
 
-
-import main.java.exceptions.*;
+import exceptions.*;
 import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 public class SwingBankController {
-    private final Bank bank;
-    private final MainFrame view;
+    private final BankService bank;
+    private final BankView view;
     private User currentUser;
 
     private static final Logger LOG = AppLogger.getLogger(SwingBankController.class.getName());
     private final String sessionId = UUID.randomUUID().toString();
 
 
-    public SwingBankController(Bank bank, MainFrame view) {
+    public SwingBankController(BankService bank, BankView view) {
         this.bank = bank;
         this.view = view;
         initController();
@@ -43,7 +44,7 @@ public class SwingBankController {
         String password = view.getLoginPanel().getPassword();
 
         if (login.isEmpty() || password.isEmpty()) {
-            view.showError("Введите логин и пароль.");
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.");
             return;
         }
 
@@ -53,17 +54,17 @@ public class SwingBankController {
             view.showDashboard(currentUser.getFullName());
             refreshBalance();
         } catch (AuthException e) {
-            view.showError("Ошибка входа: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (Exception e) {
-            view.showError("Системная ошибка: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     private void handleLogout() {
         int confirm = view.showConfirm(
-                "Вы уверены, что хотите выйти?",
-                "Выход",
+                "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ?",
+                "пїЅпїЅпїЅпїЅпїЅ",
                 JOptionPane.YES_NO_OPTION);
         LOG.info(String.format(
                 "session=%s action=LOGOUT user=%s",
@@ -81,14 +82,14 @@ public class SwingBankController {
         if (currentUser == null) return;
 
         StringBuilder sb = new StringBuilder();
-        sb.append("--- Ваши счета ---\n");
+        sb.append("--- пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ ---\n");
 
         var accounts = currentUser.getAccounts();
         if (accounts.isEmpty()) {
-            sb.append("Счетов нет.\n");
+            sb.append("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ.\n");
         } else {
             for (Account acc : accounts) {
-                sb.append(String.format("ID: %-8s | Баланс: %,.2f\n",
+                sb.append(String.format("ID: %-8s | пїЅпїЅпїЅпїЅпїЅпїЅ: %,.2f\n",
                         acc.getAccountID(), acc.getBalance()));
             }
         }
@@ -98,15 +99,15 @@ public class SwingBankController {
     }
 
     private void handleDeposit() {
-        String accountId = askForAccountId("пополнения");
+        String accountId = askForAccountId("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
         if (accountId == null) return;
 
-        BigDecimal amount = askForAmount("Введите сумму пополнения:");
+        BigDecimal amount = askForAmount("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:");
         if (amount == null) return;
 
         try {
             bank.deposit(currentUser, accountId, amount);
-            view.showInfo("Счет " + accountId + " успешно пополнен на " + amount);
+            view.showInfo("пїЅпїЅпїЅпїЅ " + accountId + " пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ " + amount);
             refreshBalance();
             LOG.info(String.format(
                     "session=%s user=%s action=DEPOSIT_SUCCESS account=%s amount=%s",
@@ -117,22 +118,22 @@ public class SwingBankController {
             ));
 
         } catch (AccountNotFoundException | IllegalArgumentException e) {
-            view.showError("Ошибка операции: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (Exception e) {
             handleSystemError(e);
         }
     }
 
     private void handleWithdraw() {
-        String accountId = askForAccountId("снятия");
+        String accountId = askForAccountId("пїЅпїЅпїЅпїЅпїЅпїЅ");
         if (accountId == null) return;
 
-        BigDecimal amount = askForAmount("Введите сумму снятия:");
+        BigDecimal amount = askForAmount("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:");
         if (amount == null) return;
 
         try {
             bank.withdraw(currentUser, accountId, amount);
-            view.showInfo("Снятие " + amount + " со счета " + accountId + " выполнено.");
+            view.showInfo("пїЅпїЅпїЅпїЅпїЅпїЅ " + amount + " пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ " + accountId + " пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.");
             refreshBalance();
             LOG.info(String.format(
                     "session=%s user=%s action=WITHDRAW_SUCCESS account=%s amount=%s",
@@ -142,21 +143,21 @@ public class SwingBankController {
                     amount
             ));
         } catch (InsufficientFundsException e) {
-            view.showError("Недостаточно средств: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (AccountNotFoundException | IllegalArgumentException e) {
-            view.showError("Ошибка: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (Exception e) {
             handleSystemError(e);
         }
     }
 
     public void handleTransaction(){
-        String accountId = askForAccountId("Оплата услуг");
+        String accountId = askForAccountId("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
         if (accountId == null) return;
 
         try {
             bank.transaction(currentUser, accountId);
-            view.showInfo("оплата готова");
+            view.showInfo("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ");
             refreshBalance();
             LOG.info(String.format(
                     "session=%s user=%s action=TRANSACTION_SUCCESS account=%s amount=%s",
@@ -166,38 +167,38 @@ public class SwingBankController {
                     bank.getMaintenanceFee()
             ));
         } catch (InsufficientFundsException e) {
-            view.showError("Недостаточно средств: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (AccountNotFoundException | IllegalArgumentException e) {
-            view.showError("Ошибка: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (Exception e) {
             handleSystemError(e);
         }
     }
 
     private void handleTransfer() {
-        String fromId = askForAccountId("списания (Ваш счет)");
+        String fromId = askForAccountId("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)");
         if (fromId == null) return;
 
-        String targetLogin = view.promptInput("Введите логин получателя:");
+        String targetLogin = view.promptInput("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:");
         if (targetLogin == null || targetLogin.trim().isEmpty()) return;
 
-        String toId = view.promptInput("Введите ID счета получателя:");
+        String toId = view.promptInput("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ID пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:");
         if (toId == null || toId.trim().isEmpty()) return;
 
-        BigDecimal amount = askForAmount("Введите сумму перевода:");
+        BigDecimal amount = askForAmount("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:");
         if (amount == null) return;
 
         int confirm = view.showConfirm(
-                String.format("Перевести %s пользователю %s?\nС счета: %s\nНа счет: %s",
+                String.format("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ %s пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ %s?\nпїЅ пїЅпїЅпїЅпїЅпїЅ: %s\nпїЅпїЅ пїЅпїЅпїЅпїЅ: %s",
                         amount, targetLogin, fromId, toId),
-                "Подтверждение перевода",
+                "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirm != JOptionPane.YES_OPTION) return;
 
         try {
             bank.transfer(currentUser, fromId, targetLogin, toId, amount);
-            view.showInfo("Перевод выполнен успешно!");
+            view.showInfo("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
             refreshBalance();
             LOG.info(String.format(
                     "session=%s user=%s action=TRANSFER_SUCCESS from=%s to_user=%s to=%s amount=%s",
@@ -209,23 +210,23 @@ public class SwingBankController {
                     amount
             ));
         } catch (AccountNotFoundException e) {
-            view.showError("Ошибка реквизитов: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (InsufficientFundsException e) {
-            view.showError("Недостаточно средств: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (TransactionException e) {
-            view.showError("Ошибка транзакции: " + e.getMessage());
+            view.showError("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         } catch (Exception e) {
             handleSystemError(e);
         }
     }
 
     private String askForAccountId(String operationName) {
-        String input = view.promptInput("Введите ID счета для " + operationName + ":");
+        String input = view.promptInput("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ID пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ " + operationName + ":");
         if (input == null) return null;
 
         input = input.trim();
         if (input.isEmpty()) {
-            view.showError("ID счета не может быть пустым");
+            view.showError("ID пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ");
             return null;
         }
         return input;
@@ -241,12 +242,12 @@ public class SwingBankController {
             try {
                 BigDecimal amount = new BigDecimal(input);
                 if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-                    view.showError("Сумма должна быть положительной!");
+                    view.showError("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
                     continue;
                 }
                 return amount;
             } catch (NumberFormatException e) {
-                view.showError("Некорректный формат числа. Пример: 100.50");
+                view.showError("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ: 100.50");
             }
         }
     }
@@ -258,7 +259,7 @@ public class SwingBankController {
     }
 
     private void handleSystemError(Exception e) {
-        view.showError("Критическая ошибка: " + e.getMessage());
+        view.showError("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: " + e.getMessage());
         e.printStackTrace();
     }
 }

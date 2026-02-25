@@ -1,4 +1,4 @@
-package main.java.UI;
+package UI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,9 +7,9 @@ import java.awt.event.ActionListener;
 
 
 public class LoginPanel extends JPanel {
-    private JTextField userField = new JTextField(15);
-    private JPasswordField passField = new JPasswordField(15);
-    private JButton loginButton = new JButton("Войти");
+    private final JTextField userField = new JTextField(15);
+    private final JPasswordField passField = new JPasswordField(15);
+    private final JButton loginButton = new JButton("Войти");
 
     public LoginPanel() {
         setLayout(new GridBagLayout());

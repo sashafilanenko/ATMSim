@@ -1,6 +1,6 @@
-package main.java.Logic;
+package Logic;
 
-import main.java.UI.*;
+import UI.*;
 
 import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
@@ -14,21 +14,21 @@ public class Main {
         Logger mainLog = AppLogger.getLogger(Main.class.getName());
         mainLog.info("Application starting with 3 ATM windows...");
 
-        Bank bank = new Bank();
+        BankService bank = new Bank();
         initializeData(bank);
 
         SwingUtilities.invokeLater(() -> {
             for (int i = 1; i <= 3; i++) {
-                MainFrame view = new MainFrame();
-                view.setTitle("My Swing Bank ATM #" + i);
-                new SwingBankController(bank, view);
-                view.setLocation(100 + i * 40, 100 + i * 40);
-                view.setVisible(true);
+                MainFrame frame = new MainFrame();
+                frame.setTitle("My Swing Bank ATM #" + i);
+                new SwingBankController(bank, frame);
+                frame.setLocation(100 + i * 40, 100 + i * 40);
+                frame.setVisible(true);
             }
         });
     }
 
-    private static void initializeData(Bank bank) {
+    private static void initializeData(BankService bank) {
         try {
             bank.registerUser("alex", "Alexey", "123");
             bank.createAccount("alex", BigDecimal.valueOf(1000));

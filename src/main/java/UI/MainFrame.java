@@ -1,15 +1,15 @@
-package main.java.UI;
+package UI;
 
 import javax.swing.*;
 import java.awt.*;
 
 
-public class MainFrame extends JFrame {
-    private CardLayout cardLayout;
-    private JPanel mainPanel;
+public class MainFrame extends JFrame implements BankView {
+    private final CardLayout cardLayout;
+    private final JPanel mainPanel;
 
-    private LoginPanel loginPanel;
-    private DashboardPanel dashboardPanel;
+    private final LoginPanel loginPanel;
+    private final DashboardPanel dashboardPanel;
 
     public MainFrame() {
         setTitle("My Swing Logic.Bank ATM");
@@ -30,29 +30,39 @@ public class MainFrame extends JFrame {
         showLogin();
     }
 
+    @Override
     public void showLogin() {
         cardLayout.show(mainPanel, "LOGIN");
         loginPanel.clearFields();
     }
 
+    @Override
     public void showDashboard(String userName) {
-        dashboardPanel.setWelcomeMessage("     , " + userName);
+        dashboardPanel.setWelcomeMessage("Привет, " + userName);
         cardLayout.show(mainPanel, "DASHBOARD");
     }
 
+    @Override
     public LoginPanel getLoginPanel() { return loginPanel; }
+
+    @Override
     public DashboardPanel getDashboardPanel() { return dashboardPanel; }
 
+    @Override
     public void showError(String msg) {
-        showWindowModalMessage(msg, "пїЅпїЅпїЅпїЅпїЅпїЅ", JOptionPane.ERROR_MESSAGE);
+        showWindowModalMessage(msg, "Ошибка", JOptionPane.ERROR_MESSAGE);
     }
 
     public void shawApplyButtons(String msg){
-        showWindowModalMessage(msg, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?", JOptionPane.ERROR_MESSAGE);
+        showWindowModalMessage(msg, "перевести?", JOptionPane.ERROR_MESSAGE);
     }
+
+    @Override
     public void showInfo(String msg) {
-        showWindowModalMessage(msg, "пїЅпїЅпїЅпїЅ", JOptionPane.INFORMATION_MESSAGE);
+        showWindowModalMessage(msg, "Инфо", JOptionPane.INFORMATION_MESSAGE);
     }
+
+    @Override
     public String promptInput(String msg) {
         JOptionPane optionPane = new JOptionPane(
                 msg,
@@ -60,7 +70,7 @@ public class MainFrame extends JFrame {
                 JOptionPane.OK_CANCEL_OPTION);
         optionPane.setWantsInput(true);
 
-        JDialog dialog = optionPane.createDialog(this, "пїЅпїЅпїЅпїЅ");
+        JDialog dialog = optionPane.createDialog(this, "Ввод");
         dialog.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
@@ -72,6 +82,7 @@ public class MainFrame extends JFrame {
         return (String) value;
     }
 
+    @Override
     public int showConfirm(String msg, String title, int optionType) {
         JOptionPane optionPane = new JOptionPane(
                 msg,

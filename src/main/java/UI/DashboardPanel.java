@@ -1,4 +1,4 @@
-package main.java.UI;
+package UI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,14 +7,14 @@ import java.awt.event.ActionListener;
 
 
 public class DashboardPanel extends JPanel {
-    private JLabel welcomeLabel = new JLabel("Привет!");
-    private JTextArea infoArea = new JTextArea(10, 30);
-    private JButton depositBtn = new JButton("Пополнить");
-    private JButton withdrawBtn = new JButton("Снять");
-    private JButton transactionBtn = new JButton("Оплата обслуживания");
-    private JButton transferBtn = new JButton("Перевод");
-    private JButton refreshBtn = new JButton("Обновить баланс");
-    private JButton logoutBtn = new JButton("Выход");
+    private final JLabel welcomeLabel = new JLabel("Привет!");
+    private final JTextArea infoArea = new JTextArea(10, 30);
+    private final JButton depositBtn = new JButton("Пополнить");
+    private final JButton withdrawBtn = new JButton("Снять");
+    private final JButton transactionBtn = new JButton("Оплата обслуживания");
+    private final JButton transferBtn = new JButton("Перевод");
+    private final JButton refreshBtn = new JButton("Обновить баланс");
+    private final JButton logoutBtn = new JButton("Выход");
 
     public DashboardPanel() {
         setLayout(new BorderLayout());

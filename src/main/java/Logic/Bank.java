@@ -1,6 +1,6 @@
-package main.java.Logic;
+package Logic;
 
-import main.java.exceptions.*;
+import exceptions.*;
 
 import java.math.BigDecimal;
 import java.security.MessageDigest;
@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class Bank {
+public class Bank implements BankService {
 
     private final Random random = new Random();
 

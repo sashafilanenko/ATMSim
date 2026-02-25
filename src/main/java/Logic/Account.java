@@ -1,6 +1,6 @@
-package main.java.Logic;
+package Logic;
 
-import main.java.exceptions.InsufficientFundsException;
+import exceptions.InsufficientFundsException;
 
 
 import java.math.BigDecimal;
