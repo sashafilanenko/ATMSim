@@ -5,12 +5,13 @@ import main.java.exceptions.AccountNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class User {
     private final String login;
     private final String fullName;
     private String passwordHash;
-    private Map<String, Account> accounts = new HashMap<>();
+    private final Map<String, Account> accounts = new ConcurrentHashMap<>();
 
     public User(String login, String fullName, String passwordHash) {
         this.login = login;

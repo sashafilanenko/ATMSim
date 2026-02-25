@@ -12,15 +12,19 @@ public class Main {
         AppLogger.init();
 
         Logger mainLog = AppLogger.getLogger(Main.class.getName());
-        mainLog.info("Application starting...");
+        mainLog.info("Application starting with 3 ATM windows...");
 
         Bank bank = new Bank();
         initializeData(bank);
 
         SwingUtilities.invokeLater(() -> {
-            MainFrame view = new MainFrame();
-            new SwingBankController(bank, view);
-            view.setVisible(true);
+            for (int i = 1; i <= 3; i++) {
+                MainFrame view = new MainFrame();
+                view.setTitle("My Swing Bank ATM #" + i);
+                new SwingBankController(bank, view);
+                view.setLocation(100 + i * 40, 100 + i * 40);
+                view.setVisible(true);
+            }
         });
     }
 
@@ -28,6 +32,12 @@ public class Main {
         try {
             bank.registerUser("alex", "Alexey", "123");
             bank.createAccount("alex", BigDecimal.valueOf(1000));
+
+            bank.registerUser("alex2", "Alexey2", "123");
+            bank.createAccount("alex2", BigDecimal.valueOf(2000));
+
+            bank.registerUser("alex3", "Alexey3", "123");
+            bank.createAccount("alex3", BigDecimal.valueOf(100));
         } catch (Exception e) {
             e.printStackTrace();
         }

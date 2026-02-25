@@ -36,7 +36,7 @@ public class MainFrame extends JFrame {
     }
 
     public void showDashboard(String userName) {
-        dashboardPanel.setWelcomeMessage("Привет, " + userName);
+        dashboardPanel.setWelcomeMessage("     , " + userName);
         cardLayout.show(mainPanel, "DASHBOARD");
     }
 
@@ -44,16 +44,61 @@ public class MainFrame extends JFrame {
     public DashboardPanel getDashboardPanel() { return dashboardPanel; }
 
     public void showError(String msg) {
-        JOptionPane.showMessageDialog(this, msg, "Ошибка", JOptionPane.ERROR_MESSAGE);
+        showWindowModalMessage(msg, "пїЅпїЅпїЅпїЅпїЅпїЅ", JOptionPane.ERROR_MESSAGE);
     }
 
     public void shawApplyButtons(String msg){
-        JOptionPane.showMessageDialog(this, msg, "перевести?", JOptionPane.ERROR_MESSAGE);
+        showWindowModalMessage(msg, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?", JOptionPane.ERROR_MESSAGE);
     }
     public void showInfo(String msg) {
-        JOptionPane.showMessageDialog(this, msg, "Инфо", JOptionPane.INFORMATION_MESSAGE);
+        showWindowModalMessage(msg, "пїЅпїЅпїЅпїЅ", JOptionPane.INFORMATION_MESSAGE);
     }
     public String promptInput(String msg) {
-        return JOptionPane.showInputDialog(this, msg);
+        JOptionPane optionPane = new JOptionPane(
+                msg,
+                JOptionPane.QUESTION_MESSAGE,
+                JOptionPane.OK_CANCEL_OPTION);
+        optionPane.setWantsInput(true);
+
+        JDialog dialog = optionPane.createDialog(this, "пїЅпїЅпїЅпїЅ");
+        dialog.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+
+        Object value = optionPane.getInputValue();
+        if (value == JOptionPane.UNINITIALIZED_VALUE) {
+            return null;
+        }
+        return (String) value;
+    }
+
+    public int showConfirm(String msg, String title, int optionType) {
+        JOptionPane optionPane = new JOptionPane(
+                msg,
+                JOptionPane.QUESTION_MESSAGE,
+                optionType);
+
+        JDialog dialog = optionPane.createDialog(this, title);
+        dialog.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+
+        Object selectedValue = optionPane.getValue();
+        if (selectedValue instanceof Integer) {
+            return (Integer) selectedValue;
+        }
+        return JOptionPane.CLOSED_OPTION;
+    }
+
+    private void showWindowModalMessage(String msg, String title, int messageType) {
+        JOptionPane optionPane = new JOptionPane(
+                msg,
+                messageType,
+                JOptionPane.DEFAULT_OPTION);
+
+        JDialog dialog = optionPane.createDialog(this, title);
+        dialog.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 }

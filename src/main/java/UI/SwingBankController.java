@@ -61,11 +61,11 @@ public class SwingBankController {
     }
 
     private void handleLogout() {
-        int confirm = JOptionPane.showConfirmDialog(view,
+        int confirm = view.showConfirm(
                 "Вы уверены, что хотите выйти?",
                 "Выход",
                 JOptionPane.YES_NO_OPTION);
-                LOG.info(String.format(
+        LOG.info(String.format(
                 "session=%s action=LOGOUT user=%s",
                 sessionId,
                 currentUser.getLogin()
@@ -187,7 +187,7 @@ public class SwingBankController {
         BigDecimal amount = askForAmount("Введите сумму перевода:");
         if (amount == null) return;
 
-        int confirm = JOptionPane.showConfirmDialog(view,
+        int confirm = view.showConfirm(
                 String.format("Перевести %s пользователю %s?\nС счета: %s\nНа счет: %s",
                         amount, targetLogin, fromId, toId),
                 "Подтверждение перевода",

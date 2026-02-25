@@ -6,13 +6,14 @@ import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class Bank {
 
     private final Random random = new Random();
 
-    private Map<String, User> users = new HashMap<>();
+    private final Map<String, User> users = new ConcurrentHashMap<>();
     private static final BigDecimal MAINTENANCE_FEE = BigDecimal.valueOf(20);
 
     public BigDecimal getMaintenanceFee(){
@@ -30,12 +31,12 @@ public class Bank {
     }
 
     public void registerUser(String login, String fullName, String rawPassword) {
-        if (users.containsKey(login)) {
-            throw new IllegalArgumentException("Пользователь с таким логином уже существует");
-        }
         String passwordHash = hashPassword(rawPassword);
         User newUser = new User(login, fullName, passwordHash);
-        users.put(login, newUser);
+        User existing = users.putIfAbsent(login, newUser);
+        if (existing != null) {
+            throw new IllegalArgumentException("Пользователь с таким логином уже существует");
+        }
     }
 
     public String createAccount(String userLogin, BigDecimal initialBalance) throws AccountNotFoundException {
@@ -110,16 +111,28 @@ public class Bank {
         Account sourceAcc = currentUser.getAccountById(fromId);
         Account targetAcc = targetUser.getAccountById(toId);
 
-        if (sourceAcc.getBalance().compareTo(amount) < 0) {
-            throw new InsufficientFundsException("Недостаточно средств для перевода");
-        }
-
         if (sourceAcc.equals(targetAcc)) {
             throw new TransactionException("Нельзя перевести деньги на тот же самый счет");
         }
+        if (amount == null) {
+            throw new IllegalArgumentException("Сумма перевода не может быть null");
+        }
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Сумма перевода должна быть положительной");
+        }
 
-        sourceAcc.withdraw(amount);
-        targetAcc.deposit(amount);
+        Account first = sourceAcc.getAccountID().compareTo(targetAcc.getAccountID()) < 0 ? sourceAcc : targetAcc;
+        Account second = first == sourceAcc ? targetAcc : sourceAcc;
+
+        first.lock();
+        second.lock();
+        try {
+            sourceAcc.withdrawUnsafe(amount);
+            targetAcc.depositUnsafe(amount);
+        } finally {
+            second.unlock();
+            first.unlock();
+        }
     }
 
 }
