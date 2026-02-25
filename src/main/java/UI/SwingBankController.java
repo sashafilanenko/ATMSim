@@ -1,9 +1,9 @@
-package UI;
+package main.java.UI;
 
-import Logic.*;
+import main.java.Logic.*;
 
 
-import exceptions.*;
+import main.java.exceptions.*;
 import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.UUID;

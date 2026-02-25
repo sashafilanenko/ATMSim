@@ -1,6 +1,6 @@
-package Logic;
+package main.java.Logic;
 
-import UI.*;
+import main.java.UI.*;
 
 import javax.swing.SwingUtilities;
 import java.math.BigDecimal;

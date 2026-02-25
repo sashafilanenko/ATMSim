@@ -1,6 +1,6 @@
-package Logic;
+package main.java.Logic;
 
-import exceptions.AccountNotFoundException;
+import main.java.exceptions.AccountNotFoundException;
 
 
 import java.math.BigDecimal;

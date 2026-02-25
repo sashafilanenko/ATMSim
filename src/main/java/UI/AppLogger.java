@@ -1,4 +1,4 @@
-package UI;
+package main.java.UI;
 
 import java.io.IOException;
 import java.nio.file.Files;

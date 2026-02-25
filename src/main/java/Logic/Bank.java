@@ -1,6 +1,6 @@
-package Logic;
+package main.java.Logic;
 
-import exceptions.*;
+import main.java.exceptions.*;
 
 import java.math.BigDecimal;
 import java.security.MessageDigest;
